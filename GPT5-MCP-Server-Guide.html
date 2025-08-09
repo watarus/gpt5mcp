@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT-5 MCP Server Creation Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        
+        .container {
+            background: #161b22;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border: 1px solid #30363d;
+        }
+        
+        h1 {
+            color: #f0f6fc;
+            border-bottom: 3px solid #58a6ff;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #f0f6fc;
+            margin-top: 30px;
+        }
+        
+        .command-block {
+            position: relative;
+            margin: 15px 0;
+        }
+        
+        .command {
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            position: relative;
+            border-left: 4px solid #58a6ff;
+            border: 1px solid #30363d;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #238636;
+            color: #f0f6fc;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: #2ea043;
+        }
+        
+        .copy-btn.copied {
+            background: #1a7f37;
+        }
+        
+        .key-points {
+            background: #21262d;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #f85149;
+            border: 1px solid #30363d;
+        }
+        
+        .key-points h3 {
+            color: #ff7b72;
+            margin-top: 0;
+        }
+        
+        .key-points ul {
+            margin: 10px 0;
+        }
+        
+        .key-points li {
+            margin: 8px 0;
+            color: #c9d1d9;
+        }
+        
+        .note {
+            background: #1c2128;
+            border: 1px solid #f85149;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #d29922;
+            color: #e6c547;
+        }
+        
+        .success {
+            color: #1a7f37;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GPT-5 MCP Server Creation Guide</h1>
+        <p>Follow these exact commands in order when working with Claude Code. Click any command to copy it to your clipboard.</p>
+
+        <h2>Step 1: Research and Setup</h2>
+        
+        <div class="command-block">
+            <div class="command">fetch claude code mcp docs from anthropic</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, 'fetch claude code mcp docs from anthropic')">Copy</button>
+        </div>
+
+        <div class="command-block">
+            <div class="command">read /your/project/path/servers</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, 'read /your/project/path/servers')">Copy</button>
+        </div>
+
+        <div class="command-block">
+            <div class="command">read claude.md</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, 'read claude.md')">Copy</button>
+        </div>
+
+        <div class="command-block">
+            <div class="command">read /your/project/path/docs/gpt5.md</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, 'read /your/project/path/docs/gpt5.md')">Copy</button>
+        </div>
+
+        <h2>Step 2: Initiate Server Creation</h2>
+        
+        <div class="command-block">
+            <div class="command">now lets create a MCP server that calls the GPT5 api and returns the response. Important: do NOT include temperature, max_tokens, or top_p parameters in the GPT-5 API calls as they are not supported. Also, use safe property access like data.output?.[0]?.content?.[0]?.text for response parsing to avoid undefined errors. Only include gpt5_generate and gpt5_messages tools - no web search functionality.</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, 'now lets create a MCP server that calls the GPT5 api and returns the response. Important: do NOT include temperature, max_tokens, or top_p parameters in the GPT-5 API calls as they are not supported. Also, use safe property access like data.output?.[0]?.content?.[0]?.text for response parsing to avoid undefined errors. Only include gpt5_generate and gpt5_messages tools - no web search functionality.')">Copy</button>
+        </div>
+
+        <h2>Step 3: Server Registration</h2>
+        
+        <div class="command-block">
+            <div class="command">add server apikey from .env, add server</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, 'add server apikey from .env, add server')">Copy</button>
+        </div>
+
+        <div class="note">
+            <strong>If the server needs to be re-registered:</strong>
+        </div>
+
+        <div class="command-block">
+            <div class="command">remove and readd server</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, 'remove and readd server')">Copy</button>
+        </div>
+
+        <h2>Step 4: Testing</h2>
+        
+        <div class="command-block">
+            <div class="command">ask gpt-5, "how are you?"</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, 'ask gpt-5, "how are you?"')">Copy</button>
+        </div>
+
+        <div class="key-points">
+            <h3>Key Points for Success:</h3>
+            <ul>
+                <li>Let Claude Code handle the technical implementation details</li>
+                <li>The critical issues are built into the initial instruction to prevent common failures</li>
+                <li>Always test with simple queries first</li>
+                <li>Be prepared to rebuild and re-add the server if issues arise</li>
+            </ul>
+            <p><em>This streamlined approach incorporates the lessons learned from our failures directly into the creation instruction, making the process much smoother.</em></p>
+        </div>
+
+        <div id="toast" style="display: none; position: fixed; top: 20px; right: 20px; background: #27ae60; color: white; padding: 10px 20px; border-radius: 5px; z-index: 1000;">
+            <span class="success">✓ Copied to clipboard!</span>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(button, text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Change button text and style
+                button.textContent = '✓ Copied!';
+                button.classList.add('copied');
+                
+                // Show toast notification
+                const toast = document.getElementById('toast');
+                toast.style.display = 'block';
+                
+                // Reset button after 2 seconds
+                setTimeout(function() {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                    toast.style.display = 'none';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                button.textContent = 'Copy Failed';
+                setTimeout(function() {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
