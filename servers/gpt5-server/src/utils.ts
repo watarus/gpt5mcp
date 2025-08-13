@@ -65,11 +65,11 @@ async function callWithOpenRouter(
     },
   });
 
-  console.error('Making OpenRouter API request with model:', options.model || 'openai/gpt-4o');
+  console.error('Making OpenRouter API request with model:', options.model || 'gpt-5');
 
   try {
     const completion = await openai.chat.completions.create({
-      model: options.model || 'openai/gpt-4o',
+      model: options.model || 'gpt-5',
       messages,
       max_tokens: options.max_tokens,
       temperature: options.temperature,
