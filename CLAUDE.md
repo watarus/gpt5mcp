@@ -4,15 +4,17 @@
     - Command: `node /Users/kristianfagerlie/apps/gpt5mcp/servers/grok-server/build/index.js`
     - Tools: `search_x`, `search_trending`, `search_by_handles`, `search_popular_posts`
 
-11. **gpt5-server** - OpenAI GPT-5 API integration for text generation
-    - Environment: `OPENAI_API_KEY`
+11. **gpt5-server** - OpenAI GPT-5 API and OpenRouter integration for text generation
+    - Environment: `OPENAI_API_KEY` and/or `OPENROUTER_API_KEY`
     - Command: `node /Users/kristianfagerlie/apps/gpt5mcp/servers/gpt5-server/build/index.js`
     - Tools: `gpt5_generate`, `gpt5_messages`
+    - Supports both OpenAI GPT-5 and OpenRouter models (Claude, GPT-4, etc.)
 
 ### Environment Variables
 All API keys are stored in `/servers/.env`:
 - `GROK_API_KEY`
 - `OPENAI_API_KEY`
+- `OPENROUTER_API_KEY`
 
 
 Grok Server - X/Twitter search and content retrieval

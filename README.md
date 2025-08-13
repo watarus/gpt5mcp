@@ -5,6 +5,7 @@ A Model Context Protocol (MCP) server that provides seamless integration with Op
 ## 🚀 Features
 
 - **Direct GPT-5 Integration**: Call GPT-5 API with simple prompts or structured conversations
+- **OpenRouter Support**: Access various models through OpenRouter API (Claude, GPT-4, etc.)
 - **Two Powerful Tools**:
   - `gpt5_generate`: Simple text generation with prompts
   - `gpt5_messages`: Structured conversation handling with message arrays
@@ -16,7 +17,9 @@ A Model Context Protocol (MCP) server that provides seamless integration with Op
 ## 📋 Prerequisites
 
 - Node.js (v18 or higher)
-- OpenAI API key with GPT-5 access
+- Either:
+  - OpenAI API key with GPT-5 access, OR
+  - OpenRouter API key for accessing various models
 - Claude Code IDE
 
 ## 🛠 Installation
@@ -47,15 +50,32 @@ Create a `.env` file in the `servers` directory:
 
 ```bash
 # servers/.env
+# Option 1: Use OpenAI directly
 OPENAI_API_KEY=your-openai-api-key-here
+
+# Option 2: Use OpenRouter (for various models)
+OPENROUTER_API_KEY=your-openrouter-api-key-here
+
+# You can configure both and switch between them
 ```
 
 ## 🔧 Claude Code Integration
 
 ### Add the Server to Claude Code
 
+#### Option 1: With OpenAI API
 ```bash
 claude mcp add gpt5-server -e OPENAI_API_KEY=your-openai-api-key-here -- node /path/to/gpt5mcp/servers/gpt5-server/build/index.js
+```
+
+#### Option 2: With OpenRouter API
+```bash
+claude mcp add gpt5-server -e OPENROUTER_API_KEY=your-openrouter-api-key-here -- node /path/to/gpt5mcp/servers/gpt5-server/build/index.js
+```
+
+#### Option 3: With Both APIs
+```bash
+claude mcp add gpt5-server -e OPENAI_API_KEY=your-openai-key -e OPENROUTER_API_KEY=your-openrouter-key -- node /path/to/gpt5mcp/servers/gpt5-server/build/index.js
 ```
 
 ### Verify Installation
@@ -74,12 +94,13 @@ Generate text using a simple input prompt.
 
 **Parameters:**
 - `input` (required): The text prompt for GPT-5
-- `model` (optional): GPT-5 model variant (default: "gpt-5")
+- `model` (optional): Model to use (default: "gpt-5" for OpenAI, "openai/gpt-4o" for OpenRouter)
 - `instructions` (optional): System instructions for the model
-- `reasoning_effort` (optional): Reasoning level ("low", "medium", "high")
+- `reasoning_effort` (optional): Reasoning level ("low", "medium", "high") - OpenAI only
 - `max_tokens` (optional): Maximum tokens to generate
 - `temperature` (optional): Randomness level (0-2)
 - `top_p` (optional): Top-p sampling parameter (0-1)
+- `use_openrouter` (optional): Force using OpenRouter instead of OpenAI
 
 ### `gpt5_messages`
 
@@ -87,12 +108,13 @@ Generate text using structured conversation messages.
 
 **Parameters:**
 - `messages` (required): Array of conversation messages with role and content
-- `model` (optional): GPT-5 model variant (default: "gpt-5")
+- `model` (optional): Model to use (default: "gpt-5" for OpenAI, "openai/gpt-4o" for OpenRouter)
 - `instructions` (optional): System instructions for the model
-- `reasoning_effort` (optional): Reasoning level ("low", "medium", "high")
+- `reasoning_effort` (optional): Reasoning level ("low", "medium", "high") - OpenAI only
 - `max_tokens` (optional): Maximum tokens to generate
 - `temperature` (optional): Randomness level (0-2)
 - `top_p` (optional): Top-p sampling parameter (0-1)
+- `use_openrouter` (optional): Force using OpenRouter instead of OpenAI
 
 **Message Format:**
 ```json
@@ -110,10 +132,18 @@ Generate text using structured conversation messages.
 ### Simple Text Generation
 
 ```typescript
-// Using the gpt5_generate tool
+// Using OpenAI GPT-5
 {
   "input": "Explain quantum computing in simple terms",
   "reasoning_effort": "high",
+  "max_tokens": 500
+}
+
+// Using OpenRouter with Claude
+{
+  "input": "Explain quantum computing in simple terms",
+  "model": "anthropic/claude-3.5-sonnet",
+  "use_openrouter": true,
   "max_tokens": 500
 }
 ```
@@ -184,9 +214,11 @@ claude mcp add gpt5-server -e OPENAI_API_KEY=your-key -- node /path/to/build/ind
 ```
 
 **API Key Issues:**
-- Ensure your OpenAI API key has GPT-5 access
+- For OpenAI: Ensure your API key has GPT-5 access
+- For OpenRouter: Ensure your API key is valid
 - Verify the key is correctly set in the `.env` file
 - Check that the environment variable is properly loaded
+- The server will automatically use OpenRouter if only `OPENROUTER_API_KEY` is set
 
 **Build Errors:**
 ```bash

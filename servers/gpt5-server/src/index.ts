@@ -25,12 +25,13 @@ console.error("Environment loaded from:", envPath);
 // Schema definitions
 const GPT5GenerateSchema = z.object({
   input: z.string().describe("The input text or prompt for GPT-5"),
-  model: z.string().optional().default("gpt-5").describe("GPT-5 model variant to use"),
+  model: z.string().optional().default("gpt-5").describe("GPT-5 model variant to use (or OpenRouter model like 'openai/gpt-4o')"),
   instructions: z.string().optional().describe("System instructions for the model"),
   reasoning_effort: z.enum(['low', 'medium', 'high']).optional().describe("Reasoning effort level"),
   max_tokens: z.number().optional().describe("Maximum tokens to generate"),
   temperature: z.number().min(0).max(2).optional().describe("Temperature for randomness (0-2)"),
-  top_p: z.number().min(0).max(1).optional().describe("Top-p sampling parameter")
+  top_p: z.number().min(0).max(1).optional().describe("Top-p sampling parameter"),
+  use_openrouter: z.boolean().optional().describe("Use OpenRouter instead of OpenAI GPT-5")
 });
 
 const GPT5MessagesSchema = z.object({
@@ -38,12 +39,13 @@ const GPT5MessagesSchema = z.object({
     role: z.enum(['user', 'developer', 'assistant']).describe("Message role"),
     content: z.string().describe("Message content")
   })).describe("Array of conversation messages"),
-  model: z.string().optional().default("gpt-5").describe("GPT-5 model variant to use"),
+  model: z.string().optional().default("gpt-5").describe("GPT-5 model variant to use (or OpenRouter model like 'openai/gpt-4o')"),
   instructions: z.string().optional().describe("System instructions for the model"),
   reasoning_effort: z.enum(['low', 'medium', 'high']).optional().describe("Reasoning effort level"),
   max_tokens: z.number().optional().describe("Maximum tokens to generate"),
   temperature: z.number().min(0).max(2).optional().describe("Temperature for randomness (0-2)"),
-  top_p: z.number().min(0).max(1).optional().describe("Top-p sampling parameter")
+  top_p: z.number().min(0).max(1).optional().describe("Top-p sampling parameter"),
+  use_openrouter: z.boolean().optional().describe("Use OpenRouter instead of OpenAI GPT-5")
 });
 
 
@@ -53,11 +55,18 @@ type GPT5MessagesArgs = z.infer<typeof GPT5MessagesSchema>;
 
 // Main function
 async function main() {
-  // Check if OPENAI_API_KEY is set
-  if (!process.env.OPENAI_API_KEY) {
-    console.error('Error: OPENAI_API_KEY environment variable is not set');
-    console.error('Please set it in .env file or as an environment variable');
+  // Check if at least one API key is set
+  if (!process.env.OPENAI_API_KEY && !process.env.OPENROUTER_API_KEY) {
+    console.error('Error: Neither OPENAI_API_KEY nor OPENROUTER_API_KEY environment variable is set');
+    console.error('Please set at least one in .env file or as an environment variable');
     process.exit(1);
+  }
+
+  if (process.env.OPENROUTER_API_KEY) {
+    console.error('OpenRouter API key detected');
+  }
+  if (process.env.OPENAI_API_KEY) {
+    console.error('OpenAI API key detected');
   }
 
   // Create MCP server
@@ -113,13 +122,22 @@ async function main() {
             const args = GPT5GenerateSchema.parse(request.params.arguments) as GPT5GenerateArgs;
             console.error(`GPT-5 Generate: "${args.input.substring(0, 100)}..."`);
             
-            const result = await callGPT5(process.env.OPENAI_API_KEY!, args.input, {
+            const useOpenRouter = args.use_openrouter || (!process.env.OPENAI_API_KEY && !!process.env.OPENROUTER_API_KEY);
+            const apiKey = useOpenRouter ? process.env.OPENROUTER_API_KEY : process.env.OPENAI_API_KEY;
+            
+            if (!apiKey) {
+              throw new Error(`${useOpenRouter ? 'OPENROUTER_API_KEY' : 'OPENAI_API_KEY'} is not set`);
+            }
+            
+            const result = await callGPT5(apiKey, args.input, {
               model: args.model,
               instructions: args.instructions,
               reasoning_effort: args.reasoning_effort,
               max_tokens: args.max_tokens,
               temperature: args.temperature,
-              top_p: args.top_p
+              top_p: args.top_p,
+              useOpenRouter,
+              openRouterApiKey: useOpenRouter ? apiKey : undefined
             });
             
             let responseText = result.content;
@@ -139,13 +157,22 @@ async function main() {
             const args = GPT5MessagesSchema.parse(request.params.arguments) as GPT5MessagesArgs;
             console.error(`GPT-5 Messages: ${args.messages.length} messages`);
             
-            const result = await callGPT5WithMessages(process.env.OPENAI_API_KEY!, args.messages, {
+            const useOpenRouter = args.use_openrouter || (!process.env.OPENAI_API_KEY && !!process.env.OPENROUTER_API_KEY);
+            const apiKey = useOpenRouter ? process.env.OPENROUTER_API_KEY : process.env.OPENAI_API_KEY;
+            
+            if (!apiKey) {
+              throw new Error(`${useOpenRouter ? 'OPENROUTER_API_KEY' : 'OPENAI_API_KEY'} is not set`);
+            }
+            
+            const result = await callGPT5WithMessages(apiKey, args.messages, {
               model: args.model,
               instructions: args.instructions,
               reasoning_effort: args.reasoning_effort,
               max_tokens: args.max_tokens,
               temperature: args.temperature,
-              top_p: args.top_p
+              top_p: args.top_p,
+              useOpenRouter,
+              openRouterApiKey: useOpenRouter ? apiKey : undefined
             });
             
             let responseText = result.content;
